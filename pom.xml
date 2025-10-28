@@ -1,0 +1,211 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.appointment</groupId>
+  <artifactId>appointment-booking-manager</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>Appointment Booking Manager</name>
+  <description>Desktop application for managing appointments using TDD</description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    
+    <!-- Dependencies versions-->
+    <junit.version>5.10.1</junit.version>
+    <mockito.version>5.8.0</mockito.version>
+    <assertj.swing.version>3.17.1</assertj.swing.version>
+    <mysql.version>8.0.33</mysql.version>
+    <testcontainers.version>1.19.3</testcontainers.version>
+    <pitest.version>1.15.3</pitest.version>
+    <jacoco.version>0.8.11</jacoco.version>
+  </properties>
+
+  <dependencies>
+	<!-- JUnit 5 -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <!-- Mockito -->
+    <dependency>
+		<groupId>org.mockito</groupId>
+		<artifactId>mockito-core</artifactId>
+		<version>${mockito.version}</version>
+		<scope>test</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.mockito</groupId>
+		<artifactId>mockito-junit-jupiter</artifactId>
+		<version>${mockito.version}</version>
+		<scope>test</scope>
+	</dependency>
+	
+	<!-- AssertJ Core -->
+	<dependency>
+		<groupId>org.assertj</groupId>
+		<artifactId>assertj-core</artifactId>
+		<version>3.24.2</version>
+		<scope>test</scope>
+	</dependency>
+	
+	<!-- AssertJ Swing for GUI Testing-->
+	<dependency>
+		<groupId>org.assertj</groupId>
+		<artifactId>assertj-swing-junit</artifactId>
+		<version>${assertj.swing.version}</version>
+		<scope>test</scope>
+	</dependency>
+	
+	<!-- MySQL -->
+	<dependency>
+		<groupId>com.mysql</groupId>
+		<artifactId>mysql-connector-j</artifactId>
+		<version>${mysql.version}</version>
+	</dependency>
+	
+	<!-- Testcontainers-->
+	<dependency>
+		<groupId>org.testcontainers</groupId>
+		<artifactId>testcontainers</artifactId>
+		<version>${testcontainers.version}</version>
+		<scope>test</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.testcontainers</groupId>
+		<artifactId>junit-jupiter</artifactId>
+		<version>${testcontainers.version}</version>
+		<scope>test</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.testcontainers</groupId>
+		<artifactId>mysql</artifactId>
+		<version>${testcontainers.version}</version>
+		<scope>test</scope>
+	</dependency>
+  </dependencies>
+  
+  <build>
+	<plugins>
+		<!-- Maven Compiler Plugin-->
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>3.11.0</version>
+			<configuration>
+				<source>17</source>
+				<target>17</target>
+			</configuration>
+		</plugin>
+		
+		<!-- Maven Plugin for Unit Tests-->
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-surefire-plugin</artifactId>
+			<version>3.5.4</version>
+		</plugin>
+		
+		<!-- Maven Plugin for Integration Tests-->
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-failsafe-plugin</artifactId>
+			<version>3.5.4</version>
+			<executions>
+				<execution>
+					<goals>
+						<goal>integration-test</goal>
+						<goal>verify</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
+		
+		<!-- JaCoCo for Code Coverage -->
+		<plugin>
+			<groupId>org.jacoco</groupId>
+			<artifactId>jacoco-maven-plugin</artifactId>
+			<version>${jacoco.version}</version>
+			<configuration>
+				<excludes>
+					<!-- Exclude main method -->
+					<exclude>**/App.class</exclude>
+				</excludes>
+			</configuration>
+			<executions>
+				<execution>
+					<goals>
+						<goal>prepare-agent</goal>
+						<goal>report</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
+		
+		<!-- Coveralls for Coverage Reporting -->
+		<plugin>
+			<groupId>org.eluder.coveralls</groupId>
+			<artifactId>coveralls-maven-plugin</artifactId>
+			<version>4.3.0</version>
+			<dependencies>
+				<dependency>
+					<groupId>javax.xml.bind</groupId>
+					<artifactId>jaxb-api</artifactId>
+					<version>2.3.1</version>
+				</dependency>
+			</dependencies>
+		</plugin>
+		
+		<!-- PITest for Mutation Testing -->
+		<plugin>
+			<groupId>org.pitest</groupId>
+			<artifactId>pitest-maven</artifactId>
+			<version>${pitest.version}</version>
+			<dependencies>
+				<dependency>
+					<groupId>org.pitest</groupId>
+					<artifactId>pitesst-junit5-plugin</artifactId>
+					<version>1.2.1</version>
+				</dependency>
+			</dependencies>
+			<configuration>
+				<targetClasses>
+					<param>com.appointment.model.*</param>
+					<param>com.appointment.service.*</param>
+					<param>com.appointment.repository.*</param>
+				</targetClasses>
+				<targetTests>
+					<param>com.appointment.*</param>
+				</targetTests>
+				<excludedClasses>
+					<param>com.appointment.App</param>
+					<param>com.appointment.view.*</param>
+				</excludedClasses>
+				<mutators>
+					<mutator>DEFAULTS</mutator>
+				</mutators>
+				<outputFormats>
+					<outputFormat>HTML</outputFormat>
+					<oupputFormat>XML</oupputFormat>
+				</outputFormats>
+			</configuration>
+		</plugin>
+		
+		<!-- Maven Exec Plugin to Run Application -->
+		<plugin>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>exec-maven-plugin</artifactId>
+			<version>3.1.1</version>
+			<configuration>
+				<mainClass>com.appointment.App</mainClass>
+			</configuration>
+		</plugin>
+	</plugins>
+  </build>
+</project>
