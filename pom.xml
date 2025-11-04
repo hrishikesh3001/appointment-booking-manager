@@ -111,18 +111,31 @@
 			</configuration>
 		</plugin>
 		
-		<!-- Maven Plugin for Unit Tests-->
+		<!-- Maven Surefire Plugin for Unit Tests-->
 		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-surefire-plugin</artifactId>
-			<version>3.5.4</version>
+		    <artifactId>maven-surefire-plugin</artifactId>
+		    <version>3.2.3</version>
+		    <configuration>
+		        <includes>
+		            <include>**/*Test.java</include>
+		        </includes>
+		        <excludes>
+		            <exclude>**/*IT.java</exclude>
+		        </excludes>
+		    </configuration>
 		</plugin>
 		
-		<!-- Maven Plugin for Integration Tests-->
+		<!-- Maven Failsafe Plugin for Integration Tests-->
 		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-failsafe-plugin</artifactId>
-			<version>3.5.4</version>
+			<version>3.2.3</version>
+			<configuration>
+				<includes>
+					<include>**/*IT.java</include>
+				</includes>
+			</configuration>
 			<executions>
 				<execution>
 					<goals>
