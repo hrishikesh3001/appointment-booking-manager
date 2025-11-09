@@ -104,4 +104,45 @@ class InMemoryAppointmentRepositoryTest {
 	        Appointment found = repository.findById(appointment.getId());
 	        assertThat(found).isNull();
 	}
+	
+	@Test
+	void testSaveWithExistingId() {
+	    LocalDateTime date = LocalDateTime.of(2025, 11, 15, 10, 0);
+	    Appointment appointment = new Appointment(
+	        100L, "John Doe", date, "Haircut", AppointmentStatus.SCHEDULED
+	    );
+
+	    Appointment saved = repository.save(appointment);
+
+	    assertThat(saved.getId()).isEqualTo(100L);
+	    assertThat(repository.findById(100L)).isNotNull();
+	}
+
+	@Test
+	void testUpdateNonExistentAppointment() {
+	    LocalDateTime date = LocalDateTime.of(2025, 11, 15, 10, 0);
+	    Appointment appointment = new Appointment(
+	        999L, "John Doe", date, "Haircut", AppointmentStatus.COMPLETED
+	    );
+
+	    // Update non-existent - should do nothing
+	    repository.update(appointment);
+
+	    Appointment found = repository.findById(999L);
+	    assertThat(found).isNull();
+	}
+
+	@Test
+	void testUpdateWithNullId() {
+	    LocalDateTime date = LocalDateTime.of(2025, 11, 15, 10, 0);
+	    Appointment appointment = new Appointment(
+	        null, "John Doe", date, "Haircut", AppointmentStatus.COMPLETED
+	    );
+
+	    // Update with null ID - should do nothing
+	    repository.update(appointment);
+
+	    // Verify nothing was added
+	    assertThat(repository.findAll()).isEmpty();
+	}
 }
