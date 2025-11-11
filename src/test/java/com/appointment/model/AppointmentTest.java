@@ -12,14 +12,14 @@ class AppointmentTest {
     void testAppointmentCreation() {
         LocalDateTime date = LocalDateTime.of(2025, 11, 15, 10, 0);
         Appointment appointment = new Appointment(
-            1L, 
-            "John Doe", 
-            date, 
-            "Haircut", 
+            "1",
+            "John Doe",
+            date,
+            "Haircut",
             AppointmentStatus.SCHEDULED
         );
 
-        assertThat(appointment.getId()).isEqualTo(1L);
+        assertThat(appointment.getId()).isEqualTo("1");
         assertThat(appointment.getCustomerName()).isEqualTo("John Doe");
         assertThat(appointment.getAppointmentDate()).isEqualTo(date);
         assertThat(appointment.getServiceType()).isEqualTo("Haircut");
@@ -29,9 +29,9 @@ class AppointmentTest {
     @Test
     void testAppointmentWithNullCustomerName() {
         LocalDateTime date = LocalDateTime.of(2025, 11, 15, 10, 0);
-        
-        assertThatThrownBy(() -> 
-            new Appointment(1L, null, date, "Haircut", AppointmentStatus.SCHEDULED)
+
+        assertThatThrownBy(() ->
+            new Appointment("1", null, date, "Haircut", AppointmentStatus.SCHEDULED)
         ).isInstanceOf(IllegalArgumentException.class)
          .hasMessage("Customer name cannot be null or empty");
     }
@@ -39,17 +39,17 @@ class AppointmentTest {
     @Test
     void testAppointmentWithEmptyCustomerName() {
         LocalDateTime date = LocalDateTime.of(2025, 11, 15, 10, 0);
-        
-        assertThatThrownBy(() -> 
-            new Appointment(1L, "", date, "Haircut", AppointmentStatus.SCHEDULED)
+
+        assertThatThrownBy(() ->
+            new Appointment("1", "", date, "Haircut", AppointmentStatus.SCHEDULED)
         ).isInstanceOf(IllegalArgumentException.class)
          .hasMessage("Customer name cannot be null or empty");
     }
 
     @Test
     void testAppointmentWithNullDate() {
-        assertThatThrownBy(() -> 
-            new Appointment(1L, "John Doe", null, "Haircut", AppointmentStatus.SCHEDULED)
+        assertThatThrownBy(() ->
+            new Appointment("1", "John Doe", null, "Haircut", AppointmentStatus.SCHEDULED)
         ).isInstanceOf(IllegalArgumentException.class)
          .hasMessage("Appointment date cannot be null");
     }
@@ -57,9 +57,9 @@ class AppointmentTest {
     @Test
     void testAppointmentWithNullServiceType() {
         LocalDateTime date = LocalDateTime.of(2025, 11, 15, 10, 0);
-        
-        assertThatThrownBy(() -> 
-            new Appointment(1L, "John Doe", date, null, AppointmentStatus.SCHEDULED)
+
+        assertThatThrownBy(() ->
+            new Appointment("1", "John Doe", date, null, AppointmentStatus.SCHEDULED)
         ).isInstanceOf(IllegalArgumentException.class)
          .hasMessage("Service type cannot be null or empty");
     }
@@ -67,9 +67,9 @@ class AppointmentTest {
     @Test
     void testAppointmentWithEmptyServiceType() {
         LocalDateTime date = LocalDateTime.of(2025, 11, 15, 10, 0);
-        
-        assertThatThrownBy(() -> 
-            new Appointment(1L, "John Doe", date, "", AppointmentStatus.SCHEDULED)
+
+        assertThatThrownBy(() ->
+            new Appointment("1", "John Doe", date, "", AppointmentStatus.SCHEDULED)
         ).isInstanceOf(IllegalArgumentException.class)
          .hasMessage("Service type cannot be null or empty");
     }
@@ -77,9 +77,9 @@ class AppointmentTest {
     @Test
     void testAppointmentWithNullStatus() {
         LocalDateTime date = LocalDateTime.of(2025, 11, 15, 10, 0);
-        
-        assertThatThrownBy(() -> 
-            new Appointment(1L, "John Doe", date, "Haircut", null)
+
+        assertThatThrownBy(() ->
+            new Appointment("1", "John Doe", date, "Haircut", null)
         ).isInstanceOf(IllegalArgumentException.class)
          .hasMessage("Status cannot be null");
     }
@@ -88,10 +88,10 @@ class AppointmentTest {
     void testAppointmentEquality() {
         LocalDateTime date = LocalDateTime.of(2025, 11, 15, 10, 0);
         Appointment appointment1 = new Appointment(
-            1L, "John Doe", date, "Haircut", AppointmentStatus.SCHEDULED
+            "1", "John Doe", date, "Haircut", AppointmentStatus.SCHEDULED
         );
         Appointment appointment2 = new Appointment(
-            1L, "Jane Smith", date, "Massage", AppointmentStatus.COMPLETED
+            "1", "Jane Smith", date, "Massage", AppointmentStatus.COMPLETED
         );
 
         assertThat(appointment1).isEqualTo(appointment2);
@@ -102,10 +102,10 @@ class AppointmentTest {
     void testAppointmentInequality() {
         LocalDateTime date = LocalDateTime.of(2025, 11, 15, 10, 0);
         Appointment appointment1 = new Appointment(
-            1L, "John Doe", date, "Haircut", AppointmentStatus.SCHEDULED
+            "1", "John Doe", date, "Haircut", AppointmentStatus.SCHEDULED
         );
         Appointment appointment2 = new Appointment(
-            2L, "John Doe", date, "Haircut", AppointmentStatus.SCHEDULED
+            "2", "John Doe", date, "Haircut", AppointmentStatus.SCHEDULED
         );
 
         assertThat(appointment1).isNotEqualTo(appointment2);
@@ -117,12 +117,12 @@ class AppointmentTest {
         assertThat(AppointmentStatus.COMPLETED).isNotNull();
         assertThat(AppointmentStatus.CANCELED).isNotNull();
     }
-    
+
     @Test
     void testAppointmentToString() {
         LocalDateTime date = LocalDateTime.of(2025, 11, 15, 10, 0);
         Appointment appointment = new Appointment(
-            1L, "John Doe", date, "Haircut", AppointmentStatus.SCHEDULED
+            "1", "John Doe", date, "Haircut", AppointmentStatus.SCHEDULED
         );
 
         String result = appointment.toString();
@@ -137,10 +137,10 @@ class AppointmentTest {
     void testAppointmentHashCode() {
         LocalDateTime date = LocalDateTime.of(2025, 11, 15, 10, 0);
         Appointment appointment1 = new Appointment(
-            1L, "John Doe", date, "Haircut", AppointmentStatus.SCHEDULED
+            "1", "John Doe", date, "Haircut", AppointmentStatus.SCHEDULED
         );
         Appointment appointment2 = new Appointment(
-            1L, "Jane Smith", date, "Massage", AppointmentStatus.COMPLETED
+            "1", "Jane Smith", date, "Massage", AppointmentStatus.COMPLETED
         );
 
         assertThat(appointment1.hashCode()).isEqualTo(appointment2.hashCode());
@@ -150,7 +150,7 @@ class AppointmentTest {
     void testAppointmentEqualsWithNull() {
         LocalDateTime date = LocalDateTime.of(2025, 11, 15, 10, 0);
         Appointment appointment = new Appointment(
-            1L, "John Doe", date, "Haircut", AppointmentStatus.SCHEDULED
+            "1", "John Doe", date, "Haircut", AppointmentStatus.SCHEDULED
         );
 
         assertThat(appointment.equals(null)).isFalse();
@@ -160,7 +160,7 @@ class AppointmentTest {
     void testAppointmentEqualsWithDifferentClass() {
         LocalDateTime date = LocalDateTime.of(2025, 11, 15, 10, 0);
         Appointment appointment = new Appointment(
-            1L, "John Doe", date, "Haircut", AppointmentStatus.SCHEDULED
+            "1", "John Doe", date, "Haircut", AppointmentStatus.SCHEDULED
         );
 
         assertThat(appointment.equals("Not an Appointment")).isFalse();
@@ -170,7 +170,7 @@ class AppointmentTest {
     void testAppointmentEqualsWithSameObject() {
         LocalDateTime date = LocalDateTime.of(2025, 11, 15, 10, 0);
         Appointment appointment = new Appointment(
-            1L, "John Doe", date, "Haircut", AppointmentStatus.SCHEDULED
+            "1", "John Doe", date, "Haircut", AppointmentStatus.SCHEDULED
         );
 
         assertThat(appointment.equals(appointment)).isTrue();

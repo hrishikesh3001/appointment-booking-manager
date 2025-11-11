@@ -15,9 +15,10 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
 
     @Override
     public Appointment save(Appointment appointment) {
-        String id = appointment.getId() != null ? 
-                  appointment.getId() : idGenerator.getAndIncrement();
-        
+        String id = (appointment.getId() != null)
+                ? appointment.getId()
+                : String.valueOf(idGenerator.getAndIncrement());
+
         Appointment toSave = new Appointment(
             id,
             appointment.getCustomerName(),
@@ -25,7 +26,7 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
             appointment.getServiceType(),
             appointment.getStatus()
         );
-        
+
         database.put(id, toSave);
         return toSave;
     }

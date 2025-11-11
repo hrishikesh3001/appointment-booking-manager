@@ -1,29 +1,37 @@
 package com.appointment.view;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.appointment.model.Appointment;
-import com.appointment.model.AppointmentStatus;
+import com.appointment.controller.BookingController;
 
-public class AppointmentSwingView extends JFrame {
+public class AppointmentSwingView extends JFrame implements AppointmentView {
 
     private static final long serialVersionUID = 1L;
 
-    private JTextField clientNameTextBox = new JTextField(15);
+    private final JTextField clientNameTextBox = new JTextField(15);
     @SuppressWarnings("rawtypes")
-    private JComboBox serviceComboBox = new JComboBox<>(new String[]{"Haircut", "Color", "Massage"});
-    private JButton addButton = new JButton("Add");
-    private JTable appointmentTable;
-    private DefaultTableModel tableModel;
+    private final JComboBox serviceComboBox = new JComboBox<>(new String[]{"Haircut", "Color", "Massage"});
+    private final JButton addButton = new JButton("Add");
+    private final JButton deleteButton = new JButton("Delete Selected");
+    private final JTable appointmentTable;
+    private final DefaultTableModel tableModel;
+
+    private BookingController controller;
 
     public AppointmentSwingView() {
         setTitle("Appointment Booking");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(500, 300);
+        setSize(600, 350);
 
-        tableModel = new DefaultTableModel(new Object[]{"Client", "Service", "Date & Time", "Status"}, 0);
+        tableModel = new DefaultTableModel(new Object[]{"Id", "Client", "Service", "Date & Time", "Status"}, 0) {
+            private static final long serialVersionUID = 1L;
+            @Override public boolean isCellEditable(int r, int c) { return false; }
+        };
         appointmentTable = new JTable(tableModel);
 
         JPanel north = new JPanel();
@@ -32,42 +40,71 @@ public class AppointmentSwingView extends JFrame {
         north.add(new JLabel("Service:"));
         north.add(serviceComboBox);
         north.add(addButton);
+        north.add(deleteButton);
 
         add(north, BorderLayout.NORTH);
         add(new JScrollPane(appointmentTable), BorderLayout.CENTER);
 
-        // set component names for AssertJ Swing
+        // names for AssertJ-Swing tests
         clientNameTextBox.setName("clientNameTextBox");
         serviceComboBox.setName("serviceComboBox");
         addButton.setName("addButton");
+        deleteButton.setName("deleteButton");
         appointmentTable.setName("appointmentTable");
 
-        // dummy controller hook – will be replaced by real controller later
-        addButton.addActionListener(e -> addAppointment());
+        // delegate actions to controller
+        addButton.addActionListener(e -> {
+            if (controller == null) return;
+            String name = getClientName();
+            if (name.isBlank()) {
+                showError("Client name cannot be empty");
+                return;
+            }
+            controller.newAppointment(name, LocalDateTime.now(), getService());
+        });
+
+        deleteButton.addActionListener(e -> {
+            if (controller == null) return;
+            int row = appointmentTable.getSelectedRow();
+            if (row >= 0) {
+                String id = (String) tableModel.getValueAt(row, 0);
+                controller.deleteAppointment(id);
+            }
+        });
     }
 
-    /* exposed for controller */
-    public String getClientName() {
-        return clientNameTextBox.getText().trim();
-    }
+    public void setController(BookingController controller) { this.controller = controller; }
 
-    public String getService() {
-        return serviceComboBox.getSelectedItem().toString();
-    }
+    public String getClientName() { return clientNameTextBox.getText().trim(); }
 
-    public void addAppointment() {
-        if (getClientName().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Client name cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
+    public String getService() { return serviceComboBox.getSelectedItem().toString(); }
+
+    // ---- AppointmentView ----
+    @Override public void showAllAppointments(List<Appointment> appointments) {
+        tableModel.setRowCount(0);
+        for (Appointment a : appointments) {
+            tableModel.addRow(new Object[]{ a.getId(), a.getCustomerName(), a.getServiceType(), a.getAppointmentDate(), a.getStatus() });
         }
-        // build domain object – id generated later by service
-        Appointment appt = new Appointment(null, getClientName(), LocalDateTime.now(), getService(), AppointmentStatus.SCHEDULED);
-        tableModel.addRow(new Object[]{appt.getCustomerName(), appt.getServiceType(), appt.getAppointmentDate(), appt.getStatus()});
+    }
+
+    @Override public void appointmentAdded(Appointment a) {
+        tableModel.addRow(new Object[]{ a.getId(), a.getCustomerName(), a.getServiceType(), a.getAppointmentDate(), a.getStatus() });
         clientNameTextBox.setText("");
     }
 
-    /* for testing */
-    public DefaultTableModel getTableModel() {
-        return tableModel;
+    @Override public void appointmentRemoved(String appointmentId) {
+        for (int i = 0; i < tableModel.getRowCount(); i++) {
+            if (appointmentId.equals(tableModel.getValueAt(i, 0))) {
+                tableModel.removeRow(i);
+                break;
+            }
+        }
     }
+
+    @Override public void showError(String message) {
+        JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    // for tests
+    public DefaultTableModel getTableModel() { return tableModel; }
 }
