@@ -10,12 +10,12 @@ import com.appointment.model.Appointment;
 
 public class InMemoryAppointmentRepository implements AppointmentRepository {
 
-    private final Map<Long, Appointment> database = new HashMap<>();
+    private final Map<String, Appointment> database = new HashMap<>();
     private final AtomicLong idGenerator = new AtomicLong(1);
 
     @Override
     public Appointment save(Appointment appointment) {
-        Long id = appointment.getId() != null ? 
+        String id = appointment.getId() != null ? 
                   appointment.getId() : idGenerator.getAndIncrement();
         
         Appointment toSave = new Appointment(
@@ -31,7 +31,7 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
     }
 
     @Override
-    public Appointment findById(Long id) {
+    public Appointment findById(String id) {
         return database.get(id);
     }
 
@@ -48,7 +48,7 @@ public class InMemoryAppointmentRepository implements AppointmentRepository {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         database.remove(id);
     }
 }

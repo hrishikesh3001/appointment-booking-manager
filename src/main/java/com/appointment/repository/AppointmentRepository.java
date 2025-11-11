@@ -5,8 +5,8 @@ import com.appointment.model.Appointment;
 
 public interface AppointmentRepository {
 	Appointment save(Appointment appointment);
-	Appointment findById(Long id);
+	Appointment findById(String id);
 	List<Appointment> findAll();
 	void update(Appointment appointment);
-	void deleteById(Long id);
+	void deleteById(String id);
 }

@@ -4,13 +4,13 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Appointment {
-	private final Long id;
+	private final String id;
 	private final String customerName;
 	private final LocalDateTime appointmentDate;
 	private final String serviceType;
 	private final AppointmentStatus status;
 	
-	public Appointment(Long id, String customerName, LocalDateTime appointmentDate, String serviceType, AppointmentStatus status) {
+	public Appointment(String id, String customerName, LocalDateTime appointmentDate, String serviceType, AppointmentStatus status) {
 		
 		if (customerName == null || customerName.trim().isEmpty()) {
 			throw new IllegalArgumentException("Customer name cannot be null or empty");
@@ -33,7 +33,7 @@ public class Appointment {
 		
 	}
 	
-	public Long getId() {
+	public String getId() {
         return id;
     }
 
