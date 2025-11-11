@@ -27,14 +27,18 @@ public class MongoAppointmentRepository implements AppointmentRepository {
     @Override
     public Appointment save(Appointment appointment) {
         Document doc = new Document()
-            .append("clientName", appointment.getClientName())
-            .append("dateTime", appointment.getDateTime().toString())
-            .append("service", appointment.getService())
+            .append("clientName", appointment.getCustomerName())
+            .append("dateTime", appointment.getAppointmentDate().toString())
+            .append("service", appointment.getServiceType())
             .append("status", appointment.getStatus().toString());
 
         collection.insertOne(doc);
         String id = doc.getObjectId("_id").toString();
-        return new Appointment(id, appointment.getClientName(), appointment.getDateTime(), appointment.getService(), appointment.getStatus());
+        return new Appointment(id,
+                               appointment.getCustomerName(),
+                               appointment.getAppointmentDate(),
+                               appointment.getServiceType(),
+                               appointment.getStatus());
     }
 
     @Override
@@ -68,9 +72,9 @@ public class MongoAppointmentRepository implements AppointmentRepository {
     @Override
     public void update(Appointment appointment) {
         Document doc = new Document()
-            .append("clientName", appointment.getClientName())
-            .append("dateTime", appointment.getDateTime().toString())
-            .append("service", appointment.getService())
+            .append("clientName", appointment.getCustomerName())
+            .append("dateTime", appointment.getAppointmentDate().toString())
+            .append("service", appointment.getServiceType())
             .append("status", appointment.getStatus().toString());
         collection.replaceOne(new Document("_id", new ObjectId(appointment.getId())), doc);
     }
