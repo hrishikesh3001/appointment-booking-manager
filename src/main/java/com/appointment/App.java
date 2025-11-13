@@ -9,11 +9,11 @@ import com.appointment.view.AppointmentSwingView;
 
 public class App {
     public static void main(String[] args) {
-        AppointmentRepository repo = new InMemoryAppointmentRepository();
-        AppointmentSwingView view = new AppointmentSwingView();
-        BookingController controller = new BookingController(repo, view);
-        view.setController(controller);
         SwingUtilities.invokeLater(() -> {
+        	AppointmentRepository repo = new InMemoryAppointmentRepository();
+            AppointmentSwingView view = new AppointmentSwingView();
+            BookingController controller = new BookingController(repo, view);
+            view.setController(controller);
             controller.allAppointments();
             view.setVisible(true);
         });

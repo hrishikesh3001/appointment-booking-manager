@@ -25,6 +25,7 @@ public class AppointmentSwingView extends JFrame implements AppointmentView {
 
     public AppointmentSwingView() {
         setTitle("Appointment Booking");
+        setName("mainFrame");  //given a the frame a stable name for E2E tests
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(600, 350);
 
