@@ -24,7 +24,7 @@ jobs:
         cache: maven
     
     - name: Build and test with Maven
-      run: mvn clean verify
+      run: mvn clean verify -Pe2e
     
     - name: Generate JaCoCo Badge
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
