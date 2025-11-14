@@ -5,22 +5,68 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=hrishikesh3001_appointment-booking-manager&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=hrishikesh3001_appointment-booking-manager)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=hrishikesh3001_appointment-booking-manager&metric=coverage)](https://sonarcloud.io/summary/new_code?id=hrishikesh3001_appointment-booking-manager)
 
-Desktop application for managing appointments built with TDD approach.
+Desktop application for managing appointments built with a TDD approach.
 
 ## Technologies
 - Java 17
 - Maven
-- MySQL
 - Swing GUI
-- JUnit 5
+- JUnit 5 (unit tests)
+- Testcontainers + MongoDB(integration tests)
+- AssertJ-Swing (E2E GUI tests)
 - Mockito
-- Testcontainers
 - GitHub Actions
 - SonarCloud
 - Coveralls
 
-## Build and Run
+> Note: MySQL is in the tech list for completeness — the current project uses an in-memory repository for local runs and Testcontainers + Mongo for integration tests in CI/local integration runs.
+
+---
+
+## Build & run
+
+Build (compile, run unit tests):
+```bash
+mvn clean test
+```
+
+Run the application
+```bash
+mvn -DskipTests package
+mvn exec:java
+```
+(Or run com.appoitnment.App directly from IDE)
+
+## Tests
+
+Unit tests
+```bash
+mvn clean test
+```
+
+Integration tests (requires Docker Desktop)
+```bash
+mvn -DskipTests=true -Dit.test=MongoAppointmentRepositoryIT verify
+```
+
+Full pipeline (unit + integration)
 ```bash
 mvn clean verify
-mvn exec:java
+```
+
+End-to-End (GUI) Tests
+
+GUI tests use AssertJ-Swing and open real windows.
+They are not run automatically during mvn verify.
+
+Run manually (recommended)
+
+Open BookingFlowE2E in IDE, Right-click → Run As → JUnit Test
+
+Or run via Maven (local only)
+```bash
+mvn -DskipTests=true -Dit.test=NONE \
+  org.apache.maven.plugins:maven-failsafe-plugin:3.2.3:integration-test \
+  -DfailIfNoTests=false \
+  -Dtest=BookingFlowE2E
 ```
