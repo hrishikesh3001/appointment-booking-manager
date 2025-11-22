@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.Test;
 
 class AppointmentTest {
@@ -42,6 +43,16 @@ class AppointmentTest {
 
         assertThatThrownBy(() ->
             new Appointment("1", "", date, "Haircut", AppointmentStatus.SCHEDULED)
+        ).isInstanceOf(IllegalArgumentException.class)
+         .hasMessage("Customer name cannot be null or empty");
+    }
+
+    @Test
+    void testAppointmentWithBlankCustomerNameSpacesOnly() {
+        LocalDateTime date = LocalDateTime.of(2025, 11, 15, 10, 0);
+
+        assertThatThrownBy(() ->
+            new Appointment("1", "   ", date, "Haircut", AppointmentStatus.SCHEDULED)
         ).isInstanceOf(IllegalArgumentException.class)
          .hasMessage("Customer name cannot be null or empty");
     }
@@ -94,6 +105,7 @@ class AppointmentTest {
             "1", "Jane Smith", date, "Massage", AppointmentStatus.COMPLETED
         );
 
+        // same id => equal and same hashCode
         assertThat(appointment1).isEqualTo(appointment2);
         assertThat(appointment1.hashCode()).isEqualTo(appointment2.hashCode());
     }
@@ -134,7 +146,7 @@ class AppointmentTest {
     }
 
     @Test
-    void testAppointmentHashCode() {
+    void testAppointmentHashCodeSameIdSameHash() {
         LocalDateTime date = LocalDateTime.of(2025, 11, 15, 10, 0);
         Appointment appointment1 = new Appointment(
             "1", "John Doe", date, "Haircut", AppointmentStatus.SCHEDULED
@@ -144,6 +156,20 @@ class AppointmentTest {
         );
 
         assertThat(appointment1.hashCode()).isEqualTo(appointment2.hashCode());
+    }
+
+    @Test
+    void testAppointmentHashCodeWithDifferentIdsAreDifferent() {
+        LocalDateTime date = LocalDateTime.of(2025, 11, 15, 10, 0);
+        Appointment appointment1 = new Appointment(
+            "1", "John Doe", date, "Haircut", AppointmentStatus.SCHEDULED
+        );
+        Appointment appointment2 = new Appointment(
+            "2", "John Doe", date, "Haircut", AppointmentStatus.SCHEDULED
+        );
+
+        // This kills the "return 0" mutant in hashCode
+        assertThat(appointment1.hashCode()).isNotEqualTo(appointment2.hashCode());
     }
 
     @Test
@@ -163,7 +189,14 @@ class AppointmentTest {
             "1", "John Doe", date, "Haircut", AppointmentStatus.SCHEDULED
         );
 
-        assertThat(appointment.equals("Not an Appointment")).isFalse();
+        // Use a dummy class so PIT executes the cast and kills the mutant on the class check
+        class FakeAppointment {
+            String id = "1";
+        }
+
+        FakeAppointment fake = new FakeAppointment();
+
+        assertThat(appointment.equals(fake)).isFalse();
     }
 
     @Test

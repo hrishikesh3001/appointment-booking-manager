@@ -28,7 +28,7 @@
     <sonar.projectKey>hrishikesh3001_appointment-booking-manager</sonar.projectKey>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-    <sonar.coverage.exclusions>**/App.class,**/view/**,**/InMemoryAppointmentRepository.java</sonar.coverage.exclusions>
+    <sonar.coverage.exclusions>**/App.class</sonar.coverage.exclusions>
   </properties>
 
   <dependencies>
@@ -81,7 +81,6 @@
       <groupId>org.mongodb</groupId>
       <artifactId>mongodb-driver-sync</artifactId>
       <version>4.11.1</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
@@ -199,6 +198,7 @@
 	  <configuration>
 	    <excludes>
 	      <exclude>**/App.class</exclude>
+	      <exclude>**/MongoAppointmentRepository.class</exclude>
 	    </excludes>
 	  </configuration>
 	  <executions>
@@ -249,7 +249,7 @@
 	  </executions>
 	</plugin>
 
-<!-- Coveralls -->
+	<!-- Coveralls -->
     <plugin>
       <groupId>org.eluder.coveralls</groupId>
       <artifactId>coveralls-maven-plugin</artifactId>
@@ -263,40 +263,54 @@
       </dependencies>
     </plugin>
 
-      <!-- PIT -->
-      <plugin>
-        <groupId>org.pitest</groupId>
-        <artifactId>pitest-maven</artifactId>
-        <version>${pitest.version}</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.pitest</groupId>
-            <artifactId>pitest-junit5-plugin</artifactId>
-            <version>1.2.1</version>
-          </dependency>
-        </dependencies>
-        <configuration>
-          <targetClasses>
-            <param>com.appointment.model.*</param>
-            <param>com.appointment.service.*</param>
-            <param>com.appointment.repository.*</param>
-          </targetClasses>
-          <targetTests>
-            <param>com.appointment.*</param>
-          </targetTests>
-          <excludedClasses>
-            <param>com.appointment.App</param>
-            <param>com.appointment.view.*</param>
-          </excludedClasses>
-          <mutators>
-            <mutator>DEFAULTS</mutator>
-          </mutators>
-          <outputFormats>
-            <outputFormat>HTML</outputFormat>
-            <outputFormat>XML</outputFormat>
-          </outputFormats>
-        </configuration>
-      </plugin>
+    <!-- PIT -->
+	<plugin>
+	  <groupId>org.pitest</groupId>
+	  <artifactId>pitest-maven</artifactId>
+	  <version>${pitest.version}</version>
+	  <dependencies>
+	    <dependency>
+	      <groupId>org.pitest</groupId>
+	      <artifactId>pitest-junit5-plugin</artifactId>
+	      <version>1.2.1</version>
+	    </dependency>
+	  </dependencies>
+	  <configuration>
+	    <!-- mutate only core logic -->
+	    <targetClasses>
+	      <param>com.appointment.model.*</param>
+	      <param>com.appointment.service.*</param>
+	      <param>com.appointment.repository.*</param>
+	      <param>com.appointment.controller.*</param>
+	    </targetClasses>
+	
+	    <!-- use ONLY core tests as drivers -->
+	    <targetTests>
+	      <param>com.appointment.model.*Test</param>
+	      <param>com.appointment.service.*Test</param>
+	      <param>com.appointment.repository.*Test</param>
+	      <param>com.appointment.controller.*Test</param>
+	    </targetTests>
+	
+	    <!-- Exclude infrastructure / GUI / main -->
+	    <excludedClasses>
+	      <param>com.appointment.App</param>
+	      <param>com.appointment.view.*</param>
+	      <param>com.appointment.repository.MongoAppointmentRepository</param>
+	    </excludedClasses>
+	
+	    <mutators>
+	      <mutator>DEFAULTS</mutator>
+	    </mutators>
+	    <outputFormats>
+	      <outputFormat>HTML</outputFormat>
+	      <outputFormat>XML</outputFormat>
+	    </outputFormats>
+	    
+	    <mutationThreshold>100</mutationThreshold>
+	  </configuration>
+	</plugin>
+
 
       <!-- Run app locally -->
       <plugin>

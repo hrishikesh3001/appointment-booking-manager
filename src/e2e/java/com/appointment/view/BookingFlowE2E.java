@@ -33,14 +33,18 @@ class BookingFlowE2E {
 
     @AfterEach
     void tearDown() {
-        window.cleanUp();        // kills the robot
-        view.dispose();          // destroys the frame
+        window.cleanUp();
+        view.dispose();
     }
 
     @Test
     void addAndDeleteAppointment_flowWorks() {
-        window.textBox("clientNameTextBox").setText("Alice");
+        window.textBox("clientNameTextBox").enterText("Alice");
         window.comboBox("serviceComboBox").selectItem("Haircut");
+
+        window.spinner("dateSpinner")
+              .enterTextAndCommit("2025-11-15 10:00");
+
         window.button("addButton").click();
         window.table("appointmentTable").requireRowCount(1);
 
@@ -51,12 +55,20 @@ class BookingFlowE2E {
 
     @Test
     void controllerCallback_updatesView() {
-        Appointment a = new Appointment("id-E2E", "Bob",
-                LocalDateTime.of(2025,11,15,10,0), "Massage", AppointmentStatus.SCHEDULED);
+        Appointment a = new Appointment(
+                "id-E2E",
+                "Bob",
+                LocalDateTime.of(2025,11,15,10,0),
+                "Massage",
+                AppointmentStatus.SCHEDULED
+        );
 
         GuiActionRunner.execute(() -> view.appointmentAdded(a));
 
         window.table("appointmentTable").requireRowCount(1);
-        window.table("appointmentTable").requireCellValue(org.assertj.swing.data.TableCell.row(0).column(0), "id-E2E");
+        window.table("appointmentTable").requireCellValue(
+                org.assertj.swing.data.TableCell.row(0).column(0),
+                "id-E2E"
+        );
     }
 }

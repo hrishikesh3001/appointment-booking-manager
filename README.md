@@ -8,65 +8,102 @@
 Desktop application for managing appointments built with a TDD approach.
 
 ## Technologies
-- Java 17
-- Maven
-- Swing GUI
-- JUnit 5 (unit tests)
-- Testcontainers + MongoDB(integration tests)
-- AssertJ-Swing (E2E GUI tests)
-- Mockito
-- GitHub Actions
-- SonarCloud
-- Coveralls
+- Java 17  
+- Maven  
+- Swing GUI  
+- JUnit 5 (unit tests)  
+- Testcontainers + MongoDB (integration tests)  
+- AssertJ-Swing (E2E GUI tests)  
+- Mockito  
+- JaCoCo (100% line & branch coverage achieved)  
+- PIT Mutation Testing (100% mutation coverage achieved for core classes)  
+- GitHub Actions  
+- SonarCloud  
+- Coveralls  
 
-> Note: MySQL is in the tech list for completeness — the current project uses an in-memory repository for local runs and Testcontainers + Mongo for integration tests in CI/local integration runs.
+> Note: The project uses an in-memory repository for all regular runs.  
+> MongoAppointmentRepository is tested only through Testcontainers integration tests.
 
 ---
 
 ## Build & run
 
-Build (compile, run unit tests):
+Build (compile + run unit tests):
 ```bash
 mvn clean test
 ```
 
-Run the application
+Run the application:
 ```bash
 mvn -DskipTests package
 mvn exec:java
 ```
-(Or run com.appoitnment.App directly from IDE)
+(Or run com.appointment.App directly from the IDE)
 
 ## Tests
 
-Unit tests
+Unit tests:
 ```bash
 mvn clean test
 ```
-
-Integration tests (requires Docker Desktop)
+Integration tests (requires Docker Desktop):
+Runs MongoAppointmentRepositoryIT with Testcontainers.
 ```bash
 mvn -DskipTests=true -Dit.test=MongoAppointmentRepositoryIT verify
 ```
-
-Full pipeline (unit + integration)
+Full pipeline (unit + integration):
 ```bash
 mvn clean verify
 ```
-
-End-to-End (GUI) Tests
+End-to-End (GUI) Tests:
 
 GUI tests use AssertJ-Swing and open real windows.
-They are not run automatically during mvn verify.
+They are not run automatically during "mvn verify".
 
 Run manually (recommended)
 
-Open BookingFlowE2E in IDE, Right-click → Run As → JUnit Test
+Open BookingFlowE2E in IDE → Right-click → Run As → JUnit Test
 
-Or run via Maven (local only)
+Run via Maven (local only)
 ```bash
 mvn -DskipTests=true -Dit.test=NONE \
   org.apache.maven.plugins:maven-failsafe-plugin:3.2.3:integration-test \
   -DfailIfNoTests=false \
   -Dtest=BookingFlowE2E
 ```
+
+## Code Coverage
+JaCoCo:
+
+Generate coverage report
+```bash
+mvn clean test
+```
+
+Report location
+```bash
+start target/site/jacoco/index.html
+```
+
+Status:
+
+100% line coverage
+100% branch coverage
+
+
+PIT Mutation Testing:
+
+Run mutation tests
+```bash
+mvn org.pitest:pitest-maven:mutationCoverage
+```
+
+Report location
+```bash
+start target/pit-reports/index.html
+```
+
+Status:
+
+100% mutation coverage
+100% test strength

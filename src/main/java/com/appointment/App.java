@@ -1,5 +1,6 @@
 package com.appointment;
 
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import com.appointment.controller.BookingController;
@@ -10,6 +11,9 @@ public class App {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             AppointmentSwingView view = new AppointmentSwingView();
+            //In the real app: closing the window should exit the JVM
+            view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            
             BookingController controller = new BookingController(new InMemoryAppointmentRepository(), view);
             view.setController(controller);
             view.setVisible(true);
