@@ -193,62 +193,95 @@
 
       <!-- JaCoCo -->
       <plugin>
-	  <groupId>org.jacoco</groupId>
-	  <artifactId>jacoco-maven-plugin</artifactId>
-	  <version>${jacoco.version}</version>
-	  <configuration>
-	    <excludes>
-	      <exclude>**/App.class</exclude>
-	      <exclude>**/MongoAppointmentRepository.class</exclude>
-	    </excludes>
-	  </configuration>
-	  <executions>
-	    <execution>
-	      <id>prepare-agent</id>
-	      <goals><goal>prepare-agent</goal></goals>
-	    </execution>
-	    <execution>
-	      <id>prepare-agent-integration</id>
-	      <goals><goal>prepare-agent-integration</goal></goals>
-	    </execution>
-	    <execution>
-	      <id>report</id>
-	      <phase>test</phase>
-	      <goals><goal>report</goal></goals>
-	    </execution>
-	    <execution>
-	      <id>report-integration</id>
-	      <phase>post-integration-test</phase>
-	      <goals><goal>report-integration</goal></goals>
-	    </execution>
-	    <execution>
-	      <id>merge-results</id>
-	      <phase>verify</phase>
-	      <goals><goal>merge</goal></goals>
-	      <configuration>
-	        <fileSets>
-	          <fileSet>
-	            <directory>${project.build.directory}</directory>
-	            <includes>
-	              <include>jacoco.exec</include>
-	              <include>jacoco-it.exec</include>
-	            </includes>
-	          </fileSet>
-	        </fileSets>
-	        <destFile>${project.build.directory}/jacoco-merged.exec</destFile>
-	      </configuration>
-	    </execution>
-	    <execution>
-	      <id>report-merged</id>
-	      <phase>verify</phase>
-	      <goals><goal>report</goal></goals>
-	      <configuration>
-	        <dataFile>${project.build.directory}/jacoco-merged.exec</dataFile>
-	        <outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
-	      </configuration>
-	    </execution>
-	  </executions>
-	</plugin>
+  <groupId>org.jacoco</groupId>
+  <artifactId>jacoco-maven-plugin</artifactId>
+  <version>${jacoco.version}</version>
+
+  <configuration>
+    <excludes>
+      <exclude>**/App.class</exclude>
+      <exclude>**/MongoAppointmentRepository.class</exclude>
+    </excludes>
+  </configuration>
+
+  <executions>
+
+    <!-- Unit tests agent -->
+    <execution>
+      <id>prepare-agent</id>
+      <goals>
+        <goal>prepare-agent</goal>
+      </goals>
+    </execution>
+
+    <!-- Integration tests agent -->
+    <execution>
+      <id>prepare-agent-integration</id>
+      <goals>
+        <goal>prepare-agent-integration</goal>
+      </goals>
+    </execution>
+
+    <!-- Unit test report -->
+    <execution>
+      <id>report</id>
+      <phase>test</phase>
+      <goals>
+        <goal>report</goal>
+      </goals>
+    </execution>
+
+    <!-- Integration test report -->
+    <execution>
+      <id>report-integration</id>
+      <phase>post-integration-test</phase>
+      <goals>
+        <goal>report-integration</goal>
+      </goals>
+    </execution>
+
+    <!-- Merge unit + integration exec files -->
+    <execution>
+      <id>merge-results</id>
+      <phase>verify</phase>
+      <goals>
+        <goal>merge</goal>
+      </goals>
+      <configuration>
+        <fileSets>
+          <fileSet>
+            <directory>${project.build.directory}</directory>
+            <includes>
+              <include>jacoco.exec</include>
+              <include>jacoco-it.exec</include>
+            </includes>
+          </fileSet>
+        </fileSets>
+        <destFile>${project.build.directory}/jacoco-merged.exec</destFile>
+      </configuration>
+    </execution>
+
+    <!-- FINAL merged report -->
+    <execution>
+      <id>report-merged</id>
+      <phase>verify</phase>
+      <goals>
+        <goal>report</goal>
+      </goals>
+      <configuration>
+        <dataFile>${project.build.directory}/jacoco-merged.exec</dataFile>
+        <outputDirectory>${project.build.directory}/site/jacoco</outputDirectory>
+        <formats>
+          <format>XML</format>>
+          <format>HTML</format>
+          <format>CSV</format>
+        </formats>
+      </configuration>
+    </execution>
+
+  </executions>
+</plugin>
+
 
 	<!-- Coveralls -->
     <plugin>
