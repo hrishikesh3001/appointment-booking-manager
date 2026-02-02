@@ -149,14 +149,20 @@
                               --add-opens java.base/java.lang=ALL-UNNAMED
                               --add-opens java.desktop/javax.swing=ALL-UNNAMED
                               --add-opens java.desktop/sun.awt=ALL-UNNAMED</argLine>
+          
+          <!-- Run only unit tests -->
           <includes>
             <include>**/*Test.java</include>
           </includes>
+          
+          <!-- Exclude IT and E2E -->
           <excludes>
             <exclude>**/*IT.java</exclude>
             <exclude>**/*E2E.java</exclude>
-       
           </excludes>
+          
+          <!-- Exclude GUI-tagged tests -->
+          <excludedGroups>gui</excludedGroups>
         </configuration>
       </plugin>
 

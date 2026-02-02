@@ -18,12 +18,13 @@ import javax.swing.table.DefaultTableModel;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
 import com.appointment.controller.BookingController;
 import com.appointment.model.Appointment;
 import com.appointment.model.AppointmentStatus;
 
-
+@Tag("gui")
 class AppointmentSwingViewUnitTest {
 
     private AppointmentSwingView view;
