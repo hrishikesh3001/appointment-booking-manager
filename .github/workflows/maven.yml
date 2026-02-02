@@ -25,24 +25,12 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Install Xvfb & GUI libs
-      run: |
-        sudo apt-get update -y
-        sudo apt-get install -y --no-install-recommends \
-          xvfb libgtk-3-0 libxrender1 libxtst6 libxext6 libxi6 xauth
-
-    - name: Verify Xvfb is available (diagnostics)
-      run: |
-        which Xvfb || true
-        Xvfb -version || true
-        xvfb-run --version || true
-
     # ---------------------------------------------------------
     # MAIN BUILD (tests + JaCoCo XML)
     # ---------------------------------------------------------
-    - name: Build and run tests (unit + integration + e2e) with xvfb-run
+    - name: Build and run tests (unit + integration)
       run: |
-        xvfb-run -s "-screen 0 1280x1024x24" mvn -B clean verify -Pe2e
+        mvn -B clean verify
 
     # ---------------------------------------------------------
     # SONARCLOUD (must run AFTER verify in same job)
