@@ -21,7 +21,7 @@ import com.mongodb.client.MongoDatabase;
 
 @Testcontainers
 class MongoAppointmentRepositoryIT {
-
+	
     @Container
     static final MongoDBContainer mongoContainer = new MongoDBContainer("mongo:6.0");
 

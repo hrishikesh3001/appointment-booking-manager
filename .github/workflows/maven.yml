@@ -28,26 +28,35 @@ jobs:
     - name: Install Xvfb & GUI libs
       run: |
         sudo apt-get update -y
-        # xvfb-run comes from the xvfb package; we add some small X libs used by Swing
-        sudo apt-get install -y --no-install-recommends xvfb libgtk-3-0 libxrender1 libxtst6 libxext6 libxi6 xauth
+        sudo apt-get install -y --no-install-recommends \
+          xvfb libgtk-3-0 libxrender1 libxtst6 libxext6 libxi6 xauth
 
     - name: Verify Xvfb is available (diagnostics)
       run: |
-        echo ">>> which Xvfb"
         which Xvfb || true
-        echo ">>> Xvfb -version"
         Xvfb -version || true
-        echo ">>> xvfb-run version (if present)"
         xvfb-run --version || true
-        echo ">>> locale"
-        locale || true
 
+    # ---------------------------------------------------------
+    # MAIN BUILD (tests + JaCoCo XML)
+    # ---------------------------------------------------------
     - name: Build and run tests (unit + integration + e2e) with xvfb-run
       run: |
-        # Use xvfb-run to start an X server for the wrapped command;
-        # -s sets screen geometry & depth (useful for GUI tests).
         xvfb-run -s "-screen 0 1280x1024x24" mvn -B clean verify -Pe2e
 
+    # ---------------------------------------------------------
+    # SONARCLOUD (must run AFTER verify in same job)
+    # ---------------------------------------------------------
+    - name: Analyze with SonarCloud
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: |
+        mvn -B sonar:sonar
+
+    # ---------------------------------------------------------
+    # JACOCO BADGE
+    # ---------------------------------------------------------
     - name: Generate JaCoCo Badge
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: cicirello/jacoco-badge-generator@v2
@@ -57,22 +66,11 @@ jobs:
         generate-coverage-badge: true
         generate-branches-badge: true
 
+    # ---------------------------------------------------------
+    # COVERALLS
+    # ---------------------------------------------------------
     - name: Upload coverage to Coveralls
-      if: success()
-      continue-on-error: true
-      run: mvn coveralls:report
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-
-    - name: Analyze with SonarCloud
-      if: success()
-      continue-on-error: true
       run: |
-        mvn sonar:sonar \
-          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
-          -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.token=${{ secrets.SONAR_TOKEN }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        mvn coveralls:report
