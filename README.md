@@ -43,6 +43,7 @@ mvn exec:java
 ```
 Or run com.appointment.App directly from the IDE.
 
+---
 
 ## Tests
 ### Unit Tests:
@@ -63,6 +64,8 @@ All unit tests
 
 Integration tests for MongoAppointmentRepository
 
+---
+
 ## Code Coverage
 
 ### JaCoCo
@@ -77,6 +80,8 @@ Report location:
 ```bash
 target/site/jacoco/index.html
 ```
+
+---
 
 ## Mutation Testing (PIT)
 Mutation testing is used to evaluate the effectiveness of the test suite, not just
@@ -99,6 +104,8 @@ target/pit-reports/index.html
 Mutation coverage: 100% (core classes)
 
 Test strength: 100%
+
+---
 
 ## Continuous Integration & Quality
 The project uses GitHub Actions to automatically:
