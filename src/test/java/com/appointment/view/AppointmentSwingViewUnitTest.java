@@ -111,7 +111,7 @@ class AppointmentSwingViewUnitTest {
         addBtn.doClick(); // if NPE happens, the test will fail
         
         //assert - state unchanged
-        assertThat(nameFiled.getText()).isEqualTo("Bob");
+        assertThat(nameField.getText()).isEqualTo("Bob");
     }
 
     // ---------- tests for "Delete" button listener (lambda$1) ----------
