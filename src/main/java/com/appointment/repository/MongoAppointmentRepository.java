@@ -16,10 +16,11 @@ import com.mongodb.client.MongoDatabase;
 
 public class MongoAppointmentRepository implements AppointmentRepository {
 
-    private final MongoCollection<Document> collection;
+    private final MongoClient client;
+	private final MongoCollection<Document> collection;
 
     public MongoAppointmentRepository(String uri) {
-        MongoClient client = MongoClients.create(uri);
+        this.client = MongoClients.create(uri);
         MongoDatabase db = client.getDatabase("appointment_test");
         this.collection = db.getCollection("appointments");
     }
@@ -82,5 +83,9 @@ public class MongoAppointmentRepository implements AppointmentRepository {
     @Override
     public void deleteById(String id) {
         collection.deleteOne(new Document("_id", new ObjectId(id)));
+    }
+    
+    public void close() {
+    	client.close();
     }
 }
