@@ -36,11 +36,11 @@ jobs:
     # SONARCLOUD (must run AFTER verify in same job)
     # ---------------------------------------------------------
     - name: Analyze with SonarCloud
+      run: mvn -B sonar:sonar
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: |
-        mvn -B sonar:sonar
+     
 
     # ---------------------------------------------------------
     # JACOCO BADGE
@@ -58,7 +58,10 @@ jobs:
     # COVERALLS
     # ---------------------------------------------------------
     - name: Upload coverage to Coveralls
-      env:
-        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+      if: success()
+      continue-on-error: true
+      # Explicitly Pass the token as Maven Property
       run: |
-        mvn coveralls:report
+        mvn coveralls:report -DrepoToken=${{ secrets.COVERALLS_REPO_TOKEN }} 
+      
+      
