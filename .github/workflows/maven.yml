@@ -1,4 +1,4 @@
-name: Java CI with Maven (with Xvfb for GUI E2E)
+name: Java CI with Maven
 
 on:
   push:
