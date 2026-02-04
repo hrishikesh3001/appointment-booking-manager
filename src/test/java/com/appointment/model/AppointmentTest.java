@@ -107,7 +107,7 @@ class AppointmentTest {
 
         // same id => equal and same hashCode
         assertThat(appointment1).isEqualTo(appointment2);
-        assertThat(appointment1.hashCode()).isEqualTo(appointment2.hashCode());
+        assertThat(appointment1).hasSameHashCodeAs(appointment2);
     }
 
     @Test
@@ -139,10 +139,11 @@ class AppointmentTest {
 
         String result = appointment.toString();
 
-        assertThat(result).contains("id=1");
-        assertThat(result).contains("customerName='John Doe'");
-        assertThat(result).contains("serviceType='Haircut'");
-        assertThat(result).contains("status=SCHEDULED");
+        assertThat(result)
+        	.contains("id=1")
+        	.contains("customerName='John Doe'")
+        	.contains("serviceType='Haircut'")
+        	.contains("status=SCHEDULED");
     }
 
     @Test
@@ -155,7 +156,7 @@ class AppointmentTest {
             "1", "Jane Smith", date, "Massage", AppointmentStatus.COMPLETED
         );
 
-        assertThat(appointment1.hashCode()).isEqualTo(appointment2.hashCode());
+        assertThat(appointment1).hasSameHashCodeAs(appointment2);
     }
 
     @Test

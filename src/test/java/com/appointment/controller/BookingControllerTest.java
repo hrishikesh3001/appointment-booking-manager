@@ -1,7 +1,6 @@
 package com.appointment.controller;
 
 import static org.mockito.Mockito.*;
-import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -52,11 +51,11 @@ class BookingControllerTest {
         Appointment saved = new Appointment(
                 "123", "Alex", dt, "Massage", AppointmentStatus.SCHEDULED);
 
-        when(repository.save(eq(toSave))).thenReturn(saved);
+        when(repository.save((toSave))).thenReturn(saved);
 
         controller.newAppointment("Alex", dt, "Massage");
 
-        verify(repository).save(eq(toSave));
+        verify(repository).save((toSave));
         verify(view).appointmentAdded(saved);
     }
 

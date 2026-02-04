@@ -14,10 +14,16 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
-public class MongoAppointmentRepository implements AppointmentRepository {
+public class MongoAppointmentRepository implements AppointmentRepository, AutoCloseable {
 
+    private static final String FIELD_ID = "_id";
+    private static final String FIELD_CLIENT_NAME = "clientName";
+    private static final String FIELD_DATE_TIME = "dateTime";
+    private static final String FIELD_SERVICE = "service";
+    private static final String FIELD_STATUS = "status";
+    
     private final MongoClient client;
-	private final MongoCollection<Document> collection;
+    private final MongoCollection<Document> collection;
 
     public MongoAppointmentRepository(String uri) {
         this.client = MongoClients.create(uri);
@@ -28,10 +34,10 @@ public class MongoAppointmentRepository implements AppointmentRepository {
     @Override
     public Appointment save(Appointment appointment) {
         Document doc = new Document()
-            .append("clientName", appointment.getCustomerName())
-            .append("dateTime", appointment.getAppointmentDate().toString())
-            .append("service", appointment.getServiceType())
-            .append("status", appointment.getStatus().toString());
+            .append(FIELD_CLIENT_NAME, appointment.getCustomerName())
+            .append(FIELD_DATE_TIME, appointment.getAppointmentDate().toString())
+            .append(FIELD_SERVICE, appointment.getServiceType())
+            .append(FIELD_STATUS, appointment.getStatus().toString());
 
         collection.insertOne(doc);
         String id = doc.getObjectId("_id").toString();
@@ -47,11 +53,11 @@ public class MongoAppointmentRepository implements AppointmentRepository {
         Document doc = collection.find(new Document("_id", new ObjectId(id))).first();
         if (doc == null) return null;
         return new Appointment(
-            doc.getObjectId("_id").toString(),
-            doc.getString("clientName"),
-            LocalDateTime.parse(doc.getString("dateTime")),
-            doc.getString("service"),
-            AppointmentStatus.valueOf(doc.getString("status"))
+            doc.getObjectId(FIELD_ID).toString(),
+            doc.getString(FIELD_CLIENT_NAME),
+            LocalDateTime.parse(doc.getString(FIELD_DATE_TIME)),
+            doc.getString(FIELD_SERVICE),
+            AppointmentStatus.valueOf(doc.getString(FIELD_STATUS))
         );
     }
 
@@ -60,11 +66,11 @@ public class MongoAppointmentRepository implements AppointmentRepository {
         List<Appointment> list = new ArrayList<>();
         for (Document doc : collection.find()) {
             list.add(new Appointment(
-                doc.getObjectId("_id").toString(),
-                doc.getString("clientName"),
-                LocalDateTime.parse(doc.getString("dateTime")),
-                doc.getString("service"),
-                AppointmentStatus.valueOf(doc.getString("status"))
+                doc.getObjectId(FIELD_ID).toString(),
+                doc.getString(FIELD_CLIENT_NAME),
+                LocalDateTime.parse(doc.getString(FIELD_DATE_TIME)),
+                doc.getString(FIELD_SERVICE),
+                AppointmentStatus.valueOf(doc.getString(FIELD_STATUS))
             ));
         }
         return list;
@@ -73,19 +79,22 @@ public class MongoAppointmentRepository implements AppointmentRepository {
     @Override
     public void update(Appointment appointment) {
         Document doc = new Document()
-            .append("clientName", appointment.getCustomerName())
-            .append("dateTime", appointment.getAppointmentDate().toString())
-            .append("service", appointment.getServiceType())
-            .append("status", appointment.getStatus().toString());
-        collection.replaceOne(new Document("_id", new ObjectId(appointment.getId())), doc);
+            .append(FIELD_CLIENT_NAME, appointment.getCustomerName())
+            .append(FIELD_DATE_TIME, appointment.getAppointmentDate().toString())
+            .append(FIELD_SERVICE, appointment.getServiceType())
+            .append(FIELD_STATUS, appointment.getStatus().toString());
+        collection.replaceOne(new Document(FIELD_ID, new ObjectId(appointment.getId())), doc);
     }
 
     @Override
     public void deleteById(String id) {
-        collection.deleteOne(new Document("_id", new ObjectId(id)));
+        collection.deleteOne(new Document(FIELD_ID, new ObjectId(id)));
     }
     
+    @Override
     public void close() {
+    	if (client != null) {
     	client.close();
+    	}
     }
 }

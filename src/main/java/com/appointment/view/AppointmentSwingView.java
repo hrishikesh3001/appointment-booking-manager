@@ -30,7 +30,7 @@ public class AppointmentSwingView extends JFrame implements AppointmentView {
     private final JTable appointmentTable;
     private final DefaultTableModel tableModel;
 
-    private BookingController controller;
+    private transient BookingController controller;
 
     public AppointmentSwingView() {
         setTitle("Appointment Booking");

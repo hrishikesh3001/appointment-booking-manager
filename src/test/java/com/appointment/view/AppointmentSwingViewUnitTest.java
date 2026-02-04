@@ -102,13 +102,16 @@ class AppointmentSwingViewUnitTest {
     void clickingAddWithNullController_doesNothing() {
         // cover controller == null branch
         AppointmentSwingView viewNoController = new AppointmentSwingView();
-        JTextField nameField = getFieldFromOther(viewNoController, "clientNameTextBox", JTextField.class);
-        JButton addBtn = getFieldFromOther(viewNoController, "addButton", JButton.class);
+        JTextField nameField = getFieldFromOther(viewNoController, "clientNameTextBox");
+        JButton addBtn = getFieldFromOther(viewNoController, "addButton");
 
         nameField.setText("Bob");
 
         // should not throw and should not call any controller (because there is none)
         addBtn.doClick(); // if NPE happens, the test will fail
+        
+        //assert - state unchanged
+        assertThat(nameFiled.getText()).isEqualTo("Bob");
     }
 
     // ---------- tests for "Delete" button listener (lambda$1) ----------
@@ -144,12 +147,16 @@ class AppointmentSwingViewUnitTest {
         DefaultTableModel model = viewNoController.getTableModel();
         model.addRow(new Object[] { "id-1", "Alice", "Cut", LocalDateTime.now(), AppointmentStatus.SCHEDULED });
 
-        JTable table = getFieldFromOther(viewNoController, "appointmentTable", JTable.class);
-        JButton deleteBtn = getFieldFromOther(viewNoController, "deleteButton", JButton.class);
+        JTable table = getFieldFromOther(viewNoController, "appointmentTable");
+        JButton deleteBtn = getFieldFromOther(viewNoController, "deleteButton");
 
         table.setRowSelectionInterval(0, 0);
+        int initialRowCount = model.getRowCount();
 
         deleteBtn.doClick(); // should not throw, and no controller to verify
+        
+        //assert - row not removed
+        assertThat(model.getRowCount()).isEqualTo(initialRowCount);
     }
 
     // ---------- tests for appointmentRemoved(String) branches ----------
@@ -180,7 +187,7 @@ class AppointmentSwingViewUnitTest {
     // ---------- small helper for accessing fields of a different instance ----------
 
     @SuppressWarnings("unchecked")
-    private <T> T getFieldFromOther(AppointmentSwingView other, String name, Class<T> type) {
+    private <T> T getFieldFromOther(AppointmentSwingView other, String name) {
         try {
             Field f = AppointmentSwingView.class.getDeclaredField(name);
             f.setAccessible(true);
@@ -207,7 +214,7 @@ class AppointmentSwingViewUnitTest {
         view.showAllAppointments(Collections.emptyList());
 
         // Assert: table is cleared
-        assertThat(model.getRowCount()).isEqualTo(0);
+        assertThat(model.getRowCount()).isZero();
     }
 
     @Test
