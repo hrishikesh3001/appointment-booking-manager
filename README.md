@@ -1,109 +1,130 @@
-# Appointment Booking Manager
+## Appointment Booking Manager
 
 [![Java CI with Maven](https://github.com/hrishikesh3001/appointment-booking-manager/actions/workflows/maven.yml/badge.svg)](https://github.com/hrishikesh3001/appointment-booking-manager/actions/workflows/maven.yml)
 [![Coverage Status](https://coveralls.io/repos/github/hrishikesh3001/appointment-booking-manager/badge.svg?branch=main)](https://coveralls.io/github/hrishikesh3001/appointment-booking-manager?branch=main)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=hrishikesh3001_appointment-booking-manager&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=hrishikesh3001_appointment-booking-manager)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=hrishikesh3001_appointment-booking-manager&metric=coverage)](https://sonarcloud.io/summary/new_code?id=hrishikesh3001_appointment-booking-manager)
 
-Desktop application for managing appointments built with a TDD approach.
-
-## Technologies
-- Java 17  
-- Maven  
-- Swing GUI  
-- JUnit 5 (unit tests)  
-- Testcontainers + MongoDB (integration tests)  
-- AssertJ-Swing (E2E GUI tests)  
-- Mockito  
-- JaCoCo (100% line & branch coverage achieved)  
-- PIT Mutation Testing (100% mutation coverage achieved for core classes)  
-- GitHub Actions  
-- SonarCloud  
-- Coveralls  
-
-> Note: The project uses an in-memory repository for all regular runs.  
-> MongoAppointmentRepository is tested only through Testcontainers integration tests.
+Desktop application for managing appointments, developed following **Test-Driven Development (TDD)** principles with a strong focus on code quality, test coverage, and continuous integration.
 
 ---
 
-## Build & run
+## Technologies
 
-Build (compile + run unit tests):
+- Java 17  
+- Maven  
+- Swing (desktop UI)  
+- JUnit 5 (unit testing)  
+- Testcontainers + MongoDB (integration testing)  
+- Mockito  
+- JaCoCo (code coverage)  
+- GitHub Actions (CI)  
+- SonarCloud (static analysis & quality gates)  
+- Coveralls (coverage reporting)
+
+> **Note**  
+> The application uses an **in-memory repository** for normal execution and unit testing.  
+> `MongoAppointmentRepository` represents infrastructure code and is tested **only via integration tests** using Testcontainers.
+
+---
+
+## Build & Run
+
+Build and run unit tests:
+
 ```bash
 mvn clean test
 ```
-
 Run the application:
+
 ```bash
 mvn -DskipTests package
 mvn exec:java
 ```
-(Or run com.appointment.App directly from the IDE)
+Or run com.appointment.App directly from the IDE.
+
 
 ## Tests
+### Unit Tests:
 
-Unit tests:
 ```bash
 mvn clean test
 ```
-Integration tests (requires Docker Desktop):
-Runs MongoAppointmentRepositoryIT with Testcontainers.
-```bash
-mvn -DskipTests=true -Dit.test=MongoAppointmentRepositoryIT verify
-```
-Full pipeline (unit + integration):
+
+### Integration Tests (MongoDB via Testcontainers):
+Requires Docker Desktop running.
+
 ```bash
 mvn clean verify
 ```
-End-to-End (GUI) Tests:
+This executes:
 
-GUI tests use AssertJ-Swing and open real windows.
-They are not run automatically during "mvn verify".
+All unit tests
 
-Run manually (recommended)
-
-Open BookingFlowE2E in IDE → Right-click → Run As → JUnit Test
-
-Run via Maven (local only)
-```bash
-mvn -DskipTests=true -Dit.test=NONE \
-  org.apache.maven.plugins:maven-failsafe-plugin:3.2.3:integration-test \
-  -DfailIfNoTests=false \
-  -Dtest=BookingFlowE2E
-```
+Integration tests for MongoAppointmentRepository
 
 ## Code Coverage
-JaCoCo:
 
-Generate coverage report
+### JaCoCo
+
+Generate coverage report:
+
 ```bash
 mvn clean test
 ```
+Report location:
 
-Report location
 ```bash
-start target/site/jacoco/index.html
+target/site/jacoco/index.html
 ```
 
-Status:
+## Mutation Testing (PIT)
+Mutation testing is used to evaluate the effectiveness of the test suite, not just
+statement execution.
 
-100% line coverage
-100% branch coverage
+The project uses PIT (Pitest) to ensure tests detect faulty logic introduced by mutations.
 
+Run mutation tests:
 
-PIT Mutation Testing:
-
-Run mutation tests
 ```bash
 mvn org.pitest:pitest-maven:mutationCoverage
 ```
+Report location:
 
-Report location
 ```bash
-start target/pit-reports/index.html
+target/pit-reports/index.html
 ```
 
-Status:
+### Status
+Mutation coverage: 100% (core classes)
 
-100% mutation coverage
-100% test strength
+Test strength: 100%
+
+## Continuous Integration & Quality
+The project uses GitHub Actions to automatically:
+
+Build the project
+
+Run unit and integration tests
+
+Generate JaCoCo reports
+
+Upload coverage to Coveralls
+
+Analyze code quality with SonarCloud
+
+## Quality Gates Enforced
+No blocker issues
+
+High maintainability rating
+
+Reliable and consistent coverage reporting
+
+## Project Status
+CI pipeline: ✅ Passing
+
+Coveralls coverage: ✅ 100% (core logic)
+
+SonarCloud quality gate: ✅ Passed
+
+Static analysis issues: ✅ Resolved
