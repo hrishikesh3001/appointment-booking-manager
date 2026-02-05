@@ -30,7 +30,7 @@
     <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     
     <sonar.coverage.exclusions>
-		**/App.class,
+		**/App.java,
 		**/view/**,
 		**/ui/**,
 		**/*Swing*.java,
