@@ -106,8 +106,9 @@ class AppointmentTest {
         );
 
         // same id => equal and same hashCode
-        assertThat(appointment1).isEqualTo(appointment2);
-        assertThat(appointment1).hasSameHashCodeAs(appointment2);
+        assertThat(appointment1)
+        	.isEqualTo(appointment2)
+        	.hasSameHashCodeAs(appointment2);
     }
 
     @Test
@@ -192,11 +193,12 @@ class AppointmentTest {
 
         // Use a dummy class so PIT executes the cast and kills the mutant on the class check
         class FakeAppointment {
-            String id = "1";
+            // intentionally empty
         }
 
-        FakeAppointment fake = new FakeAppointment();
+        Object fake = new FakeAppointment();
 
+        // Explicitly testing equals(Object) contract for different class
         assertThat(appointment.equals(fake)).isFalse();
     }
 
