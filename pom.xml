@@ -198,6 +198,7 @@
               <includes>
                 <!-- run only IT classes in mvn verify -->
                 <include>**/*IT.java</include>
+                <include>**/*E2E.java</include>
               </includes>
             </configuration>
           </execution>
