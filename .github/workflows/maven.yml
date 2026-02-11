@@ -28,9 +28,8 @@ jobs:
     # ---------------------------------------------------------
     # MAIN BUILD (tests + JaCoCo XML)
     # ---------------------------------------------------------
-    - name: Build and run tests (unit + integration)
-      run: |
-        mvn -B clean verify
+    - name: Build and Test with GUI support
+      run: xvfb-run mvn -B clean verify
 
     # ---------------------------------------------------------
     # SONARCLOUD (must run AFTER verify in same job)
